@@ -1,0 +1,12 @@
+.header {
+    color: black;
+}
+
+.body {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url(..\public\Ubuntu-Regular.ttf);
+}
