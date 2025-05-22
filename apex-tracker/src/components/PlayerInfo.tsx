@@ -6,6 +6,7 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Spinner from "react-bootstrap/Spinner";
+import PlayerStatus from "./PlayerStatus"
 
 const URL = "http://127.0.0.1:5000/player/va1encia?platform=PC";
 
@@ -51,13 +52,27 @@ function PlayerInfo() {
   const playerLvlActual = level + prestige * 500;
   const levelPercent = globalData["toNextLevelPercent"];
 
+  
+
   /*
    *
    */
   return (
     <div>
       <Card style={{ width: "15rem" }} className="shadow-lg">
-        <Card.Img variant="top" src={globalData["avatar"]} />
+        <div style={{ position: "relative" }}>
+          <Card.Img src={globalData["avatar"]} />
+          <div
+            style={{
+              position: "absolute",
+              top: "85%",     
+              right: "40%",   
+              zIndex: 2
+            }}
+          >
+            <PlayerStatus state={"offline"} />
+          </div>
+        </div>
         <Card.Body className="d-flex align-items-center ">
           <Card.Title
             style={{ paddingTop: "0.3rem", paddingBottom: "0.05rem" }}
