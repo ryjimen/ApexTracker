@@ -2,16 +2,25 @@ from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
 
-
+# Create a flask app instance
 app = Flask(__name__)
+
+# Enables CORS for all routes and allows backend to communicate with browsers
+# from other domains
 CORS(app)
+
+# The api key- should be removed later
 API_KEY = "4853042b9d8dbb2093e5cb391c638388"
 
+
 # GET PLAYER by name in the route
+# url format /player/{playerName}?platform={platform}
 @app.route("/player/<player_name>", methods=["GET"])
 def get_player(player_name):
+    # Get the platform argument in the URL
     platform = request.args.get("platform")
 
+    # If request is missing platform
     if not platform:
         return jsonify({"error": "Missing platform parameter"}), 400
 

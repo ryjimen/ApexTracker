@@ -6,24 +6,32 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Spinner from "react-bootstrap/Spinner";
-import PlayerStatus from "./PlayerStatus"
+import PlayerStatus from "./PlayerStatus";
+import Button from "react-bootstrap/Button";
 
-const URL = "http://127.0.0.1:5000/player/va1encia?platform=PC";
+type PlayerInfoProps = {
+  user: string;
+  platform: string;
+  onRemove: () => void;
+};
 
-function PlayerInfo() {
+function PlayerInfo({ user, platform, onRemove }: PlayerInfoProps) {
   const [playerData, setPlayerData] = useState(null);
+
+  const URL = `http://127.0.0.1:5000/player/${user}?platform=${platform}`;
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetch(URL);
       result.json().then((json) => {
         setPlayerData(json);
-        console.log(json);
+        //console.log(json);
       });
     };
     fetchData();
   }, []);
 
+  // If Player data not loaded
   if (!playerData) {
     return (
       <>
@@ -46,55 +54,68 @@ function PlayerInfo() {
   const rankInfo = globalData["rank"];
   const rankImg = rankInfo["rankImg"];
   const rankPercent = rankInfo["ALStopPercent"];
+  const rankRP = rankInfo["rankScore"];
 
+  // Level information
   const level = parseInt(globalData["level"]) || 0;
   const prestige = parseInt(globalData["levelPrestige"]) || 0;
   const playerLvlActual = level + prestige * 500;
   const levelPercent = globalData["toNextLevelPercent"];
 
-  
+  const realTimeData = playerData["realtime"];
+
+  const status = () => {
+    if (parseInt(realTimeData["isOnline"]) == 1) {
+      return parseInt(realTimeData["isInGame"]) == 1 ? "in-game" : "online";
+    } else {
+      return "Offline";
+    }
+  };
+  const playerStatus = status();
 
   /*
    *
    */
   return (
-    <div>
+    <>
       <Card style={{ width: "15rem" }} className="shadow-lg">
         <div style={{ position: "relative" }}>
           <Card.Img src={globalData["avatar"]} />
           <div
             style={{
               position: "absolute",
-              top: "85%",     
-              right: "40%",   
-              zIndex: 2
+              top: "85%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 2,
             }}
           >
-            <PlayerStatus state={"offline"} />
+            <PlayerStatus state={playerStatus} />
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "5%",
+              left: "5%",
+              zIndex: 2,
+            }}
+          >
+            <Button variant="danger" onClick={onRemove}
+            style={{
+              alignContent: "center"
+            }}>
+              -
+            </Button>
           </div>
         </div>
-        <Card.Body className="d-flex align-items-center ">
-          <Card.Title
-            style={{ paddingTop: "0.3rem", paddingBottom: "0.05rem" }}
-          >
-            {fullUser}
-          </Card.Title>
+        <Card.Body
+          className="d-flex align-items-center"
+          style={{ paddingTop: "0.5rem", paddingBottom: "0.2rem" }}
+        >
+          <Card.Title>{fullUser}</Card.Title>
           <Card.Text></Card.Text>
         </Card.Body>
-        <ListGroup className="list-group-flush p">
-          <ListGroupItem>
-            <Card.Body
-              style={{ paddingTop: "0.1rem", paddingBottom: "0.3rem" }}
-            >
-              <img src={rankImg} style={{ width: "30%", height: "30%" }} />
-              {rankInfo["rankName"] + " "}
-              {rankInfo["rankDiv"]}
-              <ProgressBar
-                now={100 - rankPercent}
-                label={`Top ${rankPercent}%`}
-              />
-            </Card.Body>
-          </ListGroupItem>
+        <ListGroup className="list-group-flush p ">
           <ListGroupItem>
             <Card.Body
               style={{ paddingTop: "0.1rem", paddingBottom: "0.3rem" }}
@@ -103,9 +124,25 @@ function PlayerInfo() {
               <ProgressBar now={levelPercent} label={`XP: ${levelPercent}%`} />
             </Card.Body>
           </ListGroupItem>
+          <ListGroupItem>
+            <Card.Body
+              style={{ paddingTop: "0.1rem", paddingBottom: "0.3rem" }}
+            >
+              <img src={rankImg} style={{ width: "30%", height: "30%" }} />
+              {rankInfo["rankName"] + " "}
+              {rankInfo["rankDiv"]}
+              <div className="d-flex justify-content-center">
+                {"RP: " + rankRP}
+              </div>
+              <ProgressBar
+                now={100 - rankPercent}
+                label={`Top ${rankPercent}%`}
+              />
+            </Card.Body>
+          </ListGroupItem>
         </ListGroup>
       </Card>
-    </div>
+    </>
   );
 }
 
