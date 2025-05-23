@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"; // These are the react hooks
-import { Card, ListGroupItem } from "react-bootstrap";
+ // These are the react hooks
+import { Card } from "react-bootstrap";
 
 function PlayerStatus({ state }: { state: any }) {
   return (

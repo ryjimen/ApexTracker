@@ -13,23 +13,41 @@ type PlayerInfoProps = {
   user: string;
   platform: string;
   onRemove: () => void;
+  onError: () => void;
 };
 
-function PlayerInfo({ user, platform, onRemove }: PlayerInfoProps) {
+function PlayerInfo({ user, platform, onRemove, onError }: PlayerInfoProps) {
   const [playerData, setPlayerData] = useState(null);
+  const [error, setError] = useState(false);
 
   const URL = `http://127.0.0.1:5000/player/${user}?platform=${platform}`;
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch(URL);
-      result.json().then((json) => {
-        setPlayerData(json);
-        //console.log(json);
-      });
+      fetch(URL)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Bad get");
+          }
+        })
+        .then((responseJson) => {
+          setPlayerData(responseJson);
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     };
     fetchData();
   }, []);
+
+  if (error) {
+    onError();
+    onRemove();
+    return null;
+  }
 
   // If Player data not loaded
   if (!playerData) {
@@ -100,10 +118,13 @@ function PlayerInfo({ user, platform, onRemove }: PlayerInfoProps) {
               zIndex: 2,
             }}
           >
-            <Button variant="danger" onClick={onRemove}
-            style={{
-              alignContent: "center"
-            }}>
+            <Button
+              variant="danger"
+              onClick={onRemove}
+              style={{
+                alignContent: "center",
+              }}
+            >
               -
             </Button>
           </div>

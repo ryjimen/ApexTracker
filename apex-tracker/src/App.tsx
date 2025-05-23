@@ -4,36 +4,59 @@ import "./App.css";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 
 import PlayerInfo from "./components/PlayerInfo";
 import Header from "./components/Header";
 
 function App() {
+  // Keeps trask of input and dropdown information
   const [inputUsername, setInputUsername] = useState("");
   const [inputPlatform, setInputPlatform] = useState("");
+
+  // Error when adding info card
+  const [error, setError] = useState(false);
+  const [errorName, setErrorName] = useState("");
+
+  // The player cards to be rendered
+  // An array of user, platform
   const [players, setPlayers] = useState<{ user: string; platform: string }[]>(
     []
   );
 
+  // Adds a new player to the player list
   const handlePlayerAdd = () => {
     if (!inputUsername || !inputPlatform || inputPlatform === "---") return;
 
+    // Appends new player to the end of the player list
     setPlayers((prev) => [
       ...prev,
       { user: inputUsername, platform: inputPlatform },
     ]);
 
-    // Clear inputs
+    // Reset inputs
     setInputUsername("");
     setInputPlatform("---");
   };
 
+  // remove a player by player Name via filter
   const removePlayer = (targetName: string) => {
-    setPlayers((prev) => 
+    setPlayers((prev) =>
+      // .filter works by returning elements of the array that match the condition
       prev.filter((player) => player.user !== targetName)
     );
-  }
+  };
 
+  const showError = (user: string) => {
+    console.log("error in app");
+    setError(true);
+    setErrorName(user);
+
+    setTimeout(() => {
+      setError(false);
+      setErrorName("");
+    }, 3000);
+  };
 
   return (
     <>
@@ -105,13 +128,37 @@ function App() {
         className="shadow-lg"
       >
         <div
+          style={{
+            marginTop: "1rem",
+            color: "red",
+            height: "1.5rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            visibility: error ? "visible" : "hidden", // toggle visibility
+          }}
+        >
+          <Alert
+            variant="danger"
+            style={{
+              marginTop: "1.1rem",
+              height: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {`Could Not Find: ${errorName}`}
+          </Alert>
+        </div>
+        <div
           className="d-flex flex-row"
           style={{
             flexWrap: "wrap",
             marginLeft: "3rem",
             marginRight: "3rem",
             marginTop: "1rem",
-            marginBottom: "1rem",
+            marginBottom: "4rem",
             gap: "1rem",
             justifyContent: "center",
           }}
@@ -122,6 +169,7 @@ function App() {
               user={player.user}
               platform={player.platform}
               onRemove={() => removePlayer(player.user)}
+              onError={() => showError(player.user)}
             />
           ))}
         </div>
