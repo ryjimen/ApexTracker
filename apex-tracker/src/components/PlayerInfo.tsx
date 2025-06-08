@@ -163,6 +163,7 @@ function PlayerInfo({ user, platform, onRemove, onError }: PlayerInfoProps) {
           </ListGroupItem>
         </ListGroup>
       </Card>
+      <pre>{JSON.stringify(playerData, null, 3)}</pre>
     </>
   );
 }
