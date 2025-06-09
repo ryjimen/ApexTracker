@@ -113,7 +113,7 @@ function App() {
           </Form.Text>
         </div>
         <div className="d-flex align-items-center">
-          <Button variant="danger" onClick={handlePlayerAdd}>
+          <Button  variant="danger" onClick={handlePlayerAdd} id="addPlayerBtn">
             +
           </Button>
         </div>

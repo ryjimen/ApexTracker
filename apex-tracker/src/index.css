@@ -2,6 +2,26 @@
 
 
 
+/*The * selector with !important ensures that all elements, even those styled by Bootstrap, use the. */
+body, html, * {
+  background-color: var(--body_background) !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-weight: 300 !important;
+  color: var(--body_color) !important;
+}
+
+
+[data-theme="dark"] * {
+  --body_background: #282c34;
+  --body_color: #e0e0e0;
+  --link_color: #bb86fc;
+}
+
+[data-theme="light"] * {
+  --body_background: white;
+  --body_color: black;
+  --link_color: navy;
+}
 .lobster-regular {
   font-family: "Lobster", sans-serif;
   font-weight: 400;
